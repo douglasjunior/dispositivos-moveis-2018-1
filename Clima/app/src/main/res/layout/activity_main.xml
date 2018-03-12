@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="br.grupointegrado.tads.meusfavoritos.MainActivity">
+    tools:context="br.grupointegrado.tads.clima.MainActivity">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/lista_favoritos"
+            android:id="@+id/dados_clima"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
             android:padding="16dp"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:text=""
+            />
 
     </ScrollView>
 
