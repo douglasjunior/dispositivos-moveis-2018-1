@@ -1,6 +1,10 @@
 <resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
     <string name="app_name">Clima</string>
 
+    <string name="mensagem_erro">Não foi possível obter os dados do clima, tente novamente.</string>
+
+    <string name="acao_atualizar">Atualizar</string>
+
     <string name="hoje">Hoje</string>
 
     <string name="amanha">Amanhã</string>
