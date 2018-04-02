@@ -3,11 +3,9 @@ package br.grupointegrado.tads.buscadorgithub
 import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
 import java.net.URL
@@ -18,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        exercicioJson()
+        // exercicioJson()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -62,29 +60,29 @@ class MainActivity : AppCompatActivity() {
         pb_aguarde.visibility = View.VISIBLE
     }
 
-    fun exercicioJson() {
-        var dadosJson = """
-            {
-                "temperatura": {
-                    "maxima": 11.34,
-                    "minima": 19.01
-                },
-                "clima": {
-                    "id": 801,
-                    "condicao": "Nuvens",
-                    "descricao": "poucas nuvens"
-                },
-                "pressao": 1023.51,
-                "umidade": 87
-            }
-            """
-        val objetoPrevisao = JSONObject(dadosJson)
-        val clima = objetoPrevisao.getJSONObject("clima")
-        val condicao = clima.getString("condicao")
-        val pressao = objetoPrevisao.getDouble("pressao")
-
-        Log.d("exercicioJson", "$condicao -> $pressao")
-    }
+    //    fun exercicioJson() {
+    //        var dadosJson = """
+    //            {
+    //                "temperatura": {
+    //                    "maxima": 11.34,
+    //                    "minima": 19.01
+    //                },
+    //                "clima": {
+    //                    "id": 801,
+    //                    "condicao": "Nuvens",
+    //                    "descricao": "poucas nuvens"
+    //                },
+    //                "pressao": 1023.51,
+    //                "umidade": 87
+    //            }
+    //            """
+    //        val objetoPrevisao = JSONObject(dadosJson)
+    //        val clima = objetoPrevisao.getJSONObject("clima")
+    //        val condicao = clima.getString("condicao")
+    //        val pressao = objetoPrevisao.getDouble("pressao")
+    //
+    //        Log.d("exercicioJson", "$condicao -> $pressao")
+    //    }
 
     inner class GithubBuscaTask : AsyncTask<URL, Void, String>() {
 
@@ -106,7 +104,23 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPostExecute(resultado: String?) {
             if (resultado != null) {
-                tv_github_resultado.text = resultado
+                /**
+                 * Lendo o JSON para exibir apenas os nomes dos repositórios
+                 */
+
+                tv_github_resultado.text = ""
+
+                val json = JSONObject(resultado)
+                val items = json.getJSONArray("items")
+
+                // percorra de Zero até o tamanho do array
+                for (i in 0 until items.length()) {
+                    val repository = items.getJSONObject(i)
+                    val name = repository.getString("name")
+
+                    tv_github_resultado.append("$name \n\n\n")
+                }
+
                 exibirResultado()
             } else {
                 exibirMensagemErro()
