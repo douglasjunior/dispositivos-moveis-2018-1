@@ -1,3 +1,90 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
     <string name="app_name">Clima</string>
+
+    <string name="hoje">Hoje</string>
+
+    <string name="amanha">Amanhã</string>
+    
+    <string name="formata_data_completa">
+        <xliff:g id="mes">%1$s</xliff:g>, <xliff:g id="dia">%2$s</xliff:g>
+    </string>
+
+    <!-- - - - - - - - - - - - - - - -->
+    <!--     Usado por ClimaUtils    -->
+    <!-- - - - - - - - - - - - - - - -->
+
+    <string name="formata_temperatura_celsius">
+        <xliff:g id="temp">%1.0f</xliff:g>\u00B0C
+    </string>
+
+    <string name="formata_temperatura_fahrenheit">
+        <xliff:g id="temp">%1.0f</xliff:g>\u00B0F
+    </string>
+
+    <string name="formata_vento_kmh">
+        <xliff:g id="velocidade">%1$1.0f</xliff:g> km/h <xliff:g id="direcao">%2$s</xliff:g>
+    </string>
+
+    <string name="formata_vento_mph">
+        <xliff:g id="velocidade">%1$1.0f</xliff:g> mph <xliff:g id="direcao">%2$s</xliff:g>
+    </string>
+
+    <string name="condicao_2xx">Tempestade</string>
+    <string name="condicao_3xx">Garoa</string>
+    <string name="condicao_500">Chuva leve</string>
+    <string name="condicao_501">Chuva moderada</string>
+    <string name="condicao_502">Chuva pesada</string>
+    <string name="condicao_503">Chuva intensa</string>
+    <string name="condicao_504">Chuva extrema</string>
+    <string name="condicao_511">Chuva congelante</string>
+    <string name="condicao_520">Chuva ligeira</string>
+    <string name="condicao_521">Chuva</string>
+    <string name="condicao_522">Chuva pesada</string>
+    <string name="condicao_531">Chuva áspera</string>
+    <string name="condicao_600">Neve clara</string>
+    <string name="condicao_601">Neve</string>
+    <string name="condicao_602">Neve pesada</string>
+    <string name="condicao_611">Granizo</string>
+    <string name="condicao_612">Chuva de granizo</string>
+    <string name="condicao_615">Chuva e neve</string>
+    <string name="condicao_616">Chuva e neve</string>
+    <string name="condicao_620">Chuva de neve</string>
+    <string name="condicao_621">Chuva de neve</string>
+    <string name="condicao_622">Chuva de neve</string>
+    <string name="condicao_701">Névoa</string>
+    <string name="condicao_711">Fumaça</string>
+    <string name="condicao_721">Neblina</string>
+    <string name="condicao_731">Areia, poeira</string>
+    <string name="condicao_741">Nevoeiro</string>
+    <string name="condicao_751">Areia</string>
+    <string name="condicao_761">Poeira</string>
+    <string name="condicao_762">Cinza vulcânica</string>
+    <string name="condicao_771">Rajadas</string>
+    <string name="condicao_781">Tornado</string>
+    <string name="condicao_800">Claro</string>
+    <string name="condicao_801">Parcialmente claro</string>
+    <string name="condicao_802">Nuvens dispersadas</string>
+    <string name="condicao_803">Nuvens quebradas</string>
+    <string name="condicao_804">Nuvens nubladas</string>
+    <string name="condicao_900">Tornado</string>
+    <string name="condicao_901">Tempestade tropical</string>
+    <string name="condicao_902">Furacão</string>
+    <string name="condicao_903">Frio</string>
+    <string name="condicao_904">Quente</string>
+    <string name="condicao_905">Vento</string>
+    <string name="condicao_906">Calmaria</string>
+    <string name="condicao_951">Calmaria</string>
+    <string name="condicao_952">Brisa ligeira</string>
+    <string name="condicao_953">Brisa suave</string>
+    <string name="condicao_954">Brisa</string>
+    <string name="condicao_955">Brisa fresca</string>
+    <string name="condicao_956">Brisa forte</string>
+    <string name="condicao_957">Vento elevado</string>
+    <string name="condicao_958">Vendaval</string>
+    <string name="condicao_959">Vendaval severo</string>
+    <string name="condicao_960">Tempestade</string>
+    <string name="condicao_961">Tempestade violenta</string>
+    <string name="condicao_962">Furacão</string>
+
+    <string name="condicao_desconhecida">Desconhecido (<xliff:g id="condicaoId">%1$d</xliff:g>)</string>
 </resources>
