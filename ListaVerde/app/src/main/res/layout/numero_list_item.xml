@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center">
 
     <TextView
         android:id="@+id/tv_item_numero"
@@ -9,6 +11,16 @@
         android:layout_height="wrap_content"
         android:fontFamily="monospace"
         android:padding="16dp"
-        android:textSize="42sp" />
+        android:layout_weight="1"
+        android:textSize="42sp"
+        android:text="Num 1"/>
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/tv_viewholder_index"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ViewHolder 0"
+        android:textSize="22sp"
+        android:padding="16dp"/>
+
+</LinearLayout>
