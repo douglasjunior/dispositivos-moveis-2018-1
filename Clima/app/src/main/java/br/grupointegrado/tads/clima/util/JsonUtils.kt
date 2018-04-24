@@ -1,6 +1,7 @@
 package br.grupointegrado.tads.clima.util
 
 import android.content.Context
+import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -11,13 +12,14 @@ class JsonUtils {
 
         val OWM_LIST = "list"
 
-        val OWM_TEMPERATURE = "temp"
-
-        val OWM_MAX = "max"
-        val OWM_MIN = "min"
 
         val OWM_WEATHER = "weather"
-        val OWM_DESCRIPTION = "main"
+        val OWM_DESCRIPTION = "description"
+
+        val OWM_MAIN = "main"
+        val OWM_TEMPERATURE = "temp"
+        val OWM_MAX = "temp_max"
+        val OWM_MIN = "temp_min"
 
         val OWM_MESSAGE_CODE = "cod"
 
@@ -31,10 +33,8 @@ class JsonUtils {
          *
          */
         @Throws(JSONException::class)
-        fun getSimplesStringsDeClimaDoJson(context: Context, stringJsonPrevisao: String): Array<String>? {
-
-            /* String array to hold each day's weather String */
-            var dadosDoClima: Array<String>? = null
+        fun getSimplesStringsDeClimaDoJson(context: Context, stringJsonPrevisao: String): Array<String?>? {
+            Log.v("JsonUtils", stringJsonPrevisao)
 
             val jsonPrevisao = JSONObject(stringJsonPrevisao)
 
@@ -57,7 +57,7 @@ class JsonUtils {
 
             val arrayClima = jsonPrevisao.getJSONArray(OWM_LIST)
 
-            dadosDoClima = arrayOf(arrayClima.length().toString())
+            val dadosDoClima = arrayOfNulls<String>(arrayClima.length())
 
             val dataLocal = System.currentTimeMillis()
             val dataUtc = DataUtils.convertDataLocalParaUtc(dataLocal)
@@ -67,24 +67,18 @@ class JsonUtils {
                 val data: String
                 val maximaEMinima: String
 
-                val dataHoraEmMilissegundos: Long
-                val max: Double
-                val min: Double
-                val descricao: String
-
                 val diaPrevisao = arrayClima.getJSONObject(i)
 
-
-                dataHoraEmMilissegundos = inicioDoDia + DataUtils.DIA_EM_MILISSEGUNDOS * i
+                val dataHoraEmMilissegundos = inicioDoDia + DataUtils.DIA_EM_MILISSEGUNDOS * i
                 data = DataUtils.getDataAmigavelEmString(context, dataHoraEmMilissegundos, false)
 
-
                 val objetoClima = diaPrevisao.getJSONArray(OWM_WEATHER).getJSONObject(0)
-                descricao = objetoClima.getString(OWM_DESCRIPTION)
+                val descricao = objetoClima.getString(OWM_DESCRIPTION)
 
-                val objetoTemperatura = diaPrevisao.getJSONObject(OWM_TEMPERATURE)
-                max = objetoTemperatura.getDouble(OWM_MAX)
-                min = objetoTemperatura.getDouble(OWM_MIN)
+                val objetoPrincipal = diaPrevisao.getJSONObject(OWM_MAIN)
+
+                val max = objetoPrincipal.getDouble(OWM_MAX)
+                val min = objetoPrincipal.getDouble(OWM_MIN)
                 maximaEMinima = ClimaUtils.formataMaxMin(context, max, min)
 
                 dadosDoClima[i] = "$data - $descricao - $maximaEMinima"
