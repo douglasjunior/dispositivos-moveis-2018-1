@@ -7,12 +7,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import br.grupointegrado.tads.buscadorgithub.NetworkUtils
 import br.grupointegrado.tads.clima.dados.ClimaPreferencias
 import br.grupointegrado.tads.clima.util.JsonUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PrevisaoAdapter.PrevisaoItemClickListener {
 
     var previsaoAdapter: PrevisaoAdapter? = null
 
@@ -20,13 +21,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        previsaoAdapter = PrevisaoAdapter(null)
+        previsaoAdapter = PrevisaoAdapter(null, this)
         val layoutManager = LinearLayoutManager(this)
 
         rv_clima.layoutManager = layoutManager
         rv_clima.adapter = previsaoAdapter
 
         carregarDadosClima()
+    }
+
+    override fun onItemClick(index: Int) {
+        val previsao = previsaoAdapter?.getDadosClima()?.get(index)
+        Toast.makeText(this, "Previsão: $previsao", Toast.LENGTH_SHORT).show()
     }
 
     fun carregarDadosClima() {

@@ -12,9 +12,11 @@ import android.widget.TextView
 class PrevisaoAdapter : RecyclerView.Adapter<PrevisaoAdapter.PrevisaoViewHolder> {
 
     private var dadosClima: Array<String?>?
+    private var itemClickListener: PrevisaoItemClickListener
 
-    constructor(dadosClima: Array<String?>?) {
+    constructor(dadosClima: Array<String?>?, itemClickListener: PrevisaoItemClickListener) {
         this.dadosClima = dadosClima
+        this.itemClickListener = itemClickListener;
     }
 
     override fun getItemCount(): Int {
@@ -44,12 +46,24 @@ class PrevisaoAdapter : RecyclerView.Adapter<PrevisaoAdapter.PrevisaoViewHolder>
         notifyDataSetChanged()
     }
 
+    fun getDadosClima() : Array<String?>? {
+        return dadosClima
+    }
+
+    interface PrevisaoItemClickListener {
+        fun onItemClick(index: Int)
+    }
+
     inner class PrevisaoViewHolder : RecyclerView.ViewHolder {
 
         val tvDadosPrevisao: TextView
 
         constructor(itemView: View) : super(itemView) {
             tvDadosPrevisao = itemView.findViewById(R.id.tv_dados_previsao)
+
+            itemView.setOnClickListener({
+                itemClickListener.onItemClick(adapterPosition)
+            })
         }
     }
 }
