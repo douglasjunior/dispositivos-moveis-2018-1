@@ -4,11 +4,13 @@
     <string name="mensagem_erro">Não foi possível obter os dados do clima, tente novamente.</string>
 
     <string name="acao_atualizar">Atualizar</string>
+    <string name="acao_compartilhar">Compartilhar</string>
+    <string name="acao_mapa">Mapa</string>
 
     <string name="hoje">Hoje</string>
 
     <string name="amanha">Amanhã</string>
-    
+
     <string name="formata_data_completa">
         <xliff:g id="mes">%1$s</xliff:g>, <xliff:g id="dia">%2$s</xliff:g>
     </string>

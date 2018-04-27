@@ -1,9 +1,12 @@
 package br.grupointegrado.tads.clima
 
+import android.content.Intent
+import android.net.Uri
 import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -31,13 +34,29 @@ class MainActivity : AppCompatActivity(), PrevisaoAdapter.PrevisaoItemClickListe
     }
 
     override fun onItemClick(index: Int) {
-        val previsao = previsaoAdapter?.getDadosClima()?.get(index)
-        Toast.makeText(this, "Previsão: $previsao", Toast.LENGTH_SHORT).show()
+        val previsao = previsaoAdapter!!.getDadosClima()!!.get(index)
+
+        val intentDetalhes = Intent(this, DetalhesActivity::class.java)
+        intentDetalhes.putExtra(DetalhesActivity.DADOS_PREVISAO, previsao)
+
+        startActivity(intentDetalhes)
     }
 
     fun carregarDadosClima() {
         val localizacao = ClimaPreferencias.getLocalizacaoSalva(this)
         BuscarClimaTask().execute(localizacao)
+    }
+
+    fun abrirMapa() {
+        val addressString = "Campo Mourão, Paraná, Brasil"
+        val uriGeo = Uri.parse("geo:0,0?q=$addressString")
+
+        val intentMapa = Intent(Intent.ACTION_VIEW)
+        intentMapa.data = uriGeo
+
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(intentMapa)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -48,6 +67,11 @@ class MainActivity : AppCompatActivity(), PrevisaoAdapter.PrevisaoItemClickListe
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId === R.id.acao_atualizar) {
             carregarDadosClima()
+            return true
+        }
+        if (item?.itemId === R.id.acao_mapa) {
+            abrirMapa()
+            return true
         }
         return super.onOptionsItemSelected(item)
     }
