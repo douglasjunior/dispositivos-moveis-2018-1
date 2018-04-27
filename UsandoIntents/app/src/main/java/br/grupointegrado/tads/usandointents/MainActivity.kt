@@ -4,9 +4,13 @@ import android.content.Intent
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.app.ShareCompat
 import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
+import android.content.ContentResolver
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,6 +53,23 @@ class MainActivity : AppCompatActivity() {
         // verifica se a ação pode ser atendida
         if (intent.resolveActivity(packageManager) != null) {
             startActivity(intent)
+        }
+    }
+
+    fun compartilhar(view: View) {
+        val tipoMedia = "text/plain"
+        val titulo = "Aprendendo a compartilhar"
+        val texto = et_mensagem.text.toString()
+        // criando o intent de compartilhamento
+        val intentCompartilhar = ShareCompat.IntentBuilder
+                .from(this)
+                .setType(tipoMedia)
+                .setChooserTitle(titulo)
+                .setText(texto)
+                .intent
+        // verifica se a ação pode ser atendida
+        if (intentCompartilhar.resolveActivity(packageManager) != null) {
+            startActivity(intentCompartilhar)
         }
     }
 }

@@ -33,4 +33,11 @@
         android:text="@string/btn_abrir_mapa"
         android:onClick="abrirMapa"/>
 
+    <Button
+        android:id="@+id/btn_compartilhar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_compartilhar"
+        android:onClick="compartilhar"/>
+
 </LinearLayout>
