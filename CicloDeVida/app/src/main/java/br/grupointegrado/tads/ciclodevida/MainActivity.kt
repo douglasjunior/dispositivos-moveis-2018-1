@@ -1,19 +1,11 @@
 package br.grupointegrado.tads.ciclodevida
 
 import android.Manifest
-import android.app.Dialog
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.View
-import android.Manifest.permission
-import android.Manifest.permission.WRITE_CALENDAR
 import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -58,8 +50,10 @@ class MainActivity : AppCompatActivity() {
         Log.d("CicloVida", mensagem)
     }
 
+    /**
+     * Abre uma Dialog de permissão para simular o evento onPause
+     */
     fun abrirDialog(view: View) {
-
         val permissoes = arrayOf(Manifest.permission.WRITE_CALENDAR)
 
         ActivityCompat.requestPermissions(this,
