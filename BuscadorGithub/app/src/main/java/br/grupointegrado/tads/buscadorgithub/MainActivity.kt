@@ -16,7 +16,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // exercicioJson()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -60,29 +59,6 @@ class MainActivity : AppCompatActivity() {
         pb_aguarde.visibility = View.VISIBLE
     }
 
-    //    fun exercicioJson() {
-    //        var dadosJson = """
-    //            {
-    //                "temperatura": {
-    //                    "maxima": 11.34,
-    //                    "minima": 19.01
-    //                },
-    //                "clima": {
-    //                    "id": 801,
-    //                    "condicao": "Nuvens",
-    //                    "descricao": "poucas nuvens"
-    //                },
-    //                "pressao": 1023.51,
-    //                "umidade": 87
-    //            }
-    //            """
-    //        val objetoPrevisao = JSONObject(dadosJson)
-    //        val clima = objetoPrevisao.getJSONObject("clima")
-    //        val condicao = clima.getString("condicao")
-    //        val pressao = objetoPrevisao.getDouble("pressao")
-    //
-    //        Log.d("exercicioJson", "$condicao -> $pressao")
-    //    }
 
     inner class GithubBuscaTask : AsyncTask<URL, Void, String>() {
 
