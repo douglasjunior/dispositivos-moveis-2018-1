@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.AsyncTaskLoader
 import android.support.v4.content.Loader
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -19,9 +21,21 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<String> 
         val URL_BUSCA_EXTRA = "URL_BUSCA_EXTRA"
     }
 
+    var cacheResultado: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        et_busca.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                cacheResultado = null
+            }
+            override fun afterTextChanged(p0: Editable?) {
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+        })
 
         supportLoaderManager.initLoader(GITHUB_BUSCA_LOADER, null, this)
     }
@@ -76,7 +90,11 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<String> 
                     return
                 }
                 exibirProgressBar()
-                forceLoad()
+                if (cacheResultado != null) {
+                    deliverResult(cacheResultado)
+                } else {
+                    forceLoad()
+                }
             }
 
             override fun loadInBackground(): String? {
@@ -89,6 +107,11 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<String> 
                     ex.printStackTrace()
                 }
                 return null
+            }
+
+            override fun deliverResult(resultado: String?) {
+                super.deliverResult(resultado)
+                cacheResultado = resultado
             }
         }
         return loader
