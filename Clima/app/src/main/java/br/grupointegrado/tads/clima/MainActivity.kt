@@ -2,23 +2,19 @@ package br.grupointegrado.tads.clima
 
 import android.content.Intent
 import android.net.Uri
-import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.AsyncTaskLoader
 import android.support.v4.content.Loader
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import br.grupointegrado.tads.buscadorgithub.NetworkUtils
 import br.grupointegrado.tads.clima.dados.ClimaPreferencias
 import br.grupointegrado.tads.clima.util.JsonUtils
 import kotlinx.android.synthetic.main.activity_main.*
-import java.net.URL
 
 class MainActivity : AppCompatActivity(),
         PrevisaoAdapter.PrevisaoItemClickListener,
@@ -26,7 +22,6 @@ class MainActivity : AppCompatActivity(),
 
     companion object {
         val DADOS_PREVISAO_LOADER = 1000
-        val LOCALIZACAO_EXTRA = "LOCALIZACAO_EXTRA"
     }
 
     var previsaoAdapter: PrevisaoAdapter? = null
@@ -85,7 +80,8 @@ class MainActivity : AppCompatActivity(),
         return loader
     }
 
-    override fun onLoadFinished(loader: Loader<Array<String?>?>?, dadosClima: Array<String?>?) {
+    override fun onLoadFinished(loader: Loader<Array<String?>?>?,
+                                dadosClima: Array<String?>?) {
         previsaoAdapter?.setDadosClima(dadosClima)
         if (dadosClima != null) {
             exibirResultado()
