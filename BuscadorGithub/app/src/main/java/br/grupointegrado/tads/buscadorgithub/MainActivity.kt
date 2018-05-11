@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<String> 
     companion object {
         val GITHUB_BUSCA_LOADER = 1000
         val URL_BUSCA_EXTRA = "URL_BUSCA_EXTRA"
+        val RESULTADO_EXTRA = "RESULTADO_EXTRA"
     }
 
     var cacheResultado: String? = null
@@ -27,17 +28,38 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<String> 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(URL_BUSCA_EXTRA)) {
+                tv_url.text = savedInstanceState.getString(URL_BUSCA_EXTRA)
+            }
+//            if (savedInstanceState.containsKey(RESULTADO_EXTRA)) {
+//                tv_github_resultado.text = savedInstanceState.getString(RESULTADO_EXTRA)
+//            }
+        }
+
         et_busca.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 cacheResultado = null
             }
+
             override fun afterTextChanged(p0: Editable?) {
             }
+
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
         })
 
         supportLoaderManager.initLoader(GITHUB_BUSCA_LOADER, null, this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+
+        val url = tv_url.text.toString()
+//        val resultado = tv_github_resultado.text.toString()
+
+        outState?.putString(URL_BUSCA_EXTRA, url)
+//        outState?.putString(RESULTADO_EXTRA, resultado)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
