@@ -3,4 +3,5 @@
     <string name="buscar">Buscar</string>
 
     <string name="mensagem_erro">Não foi possível obter o resultado, tente novamente.</string>
+    <string name="configuracoes">Configurações</string>
 </resources>
