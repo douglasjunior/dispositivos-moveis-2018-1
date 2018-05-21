@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <bool name="padrao_exibir_url">true</bool>
+    <bool name="pref_exibir_url_padrao">true</bool>
 
 </resources>

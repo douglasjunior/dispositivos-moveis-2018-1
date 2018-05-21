@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.ContextCompat
 import android.support.v4.content.Loader
 import android.support.v7.preference.PreferenceManager
 import android.text.Editable
@@ -45,10 +46,16 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<String>,
 
         val exibirUrl = sharedPreferences.getBoolean(
                 getString(R.string.pref_exibir_url),
-                resources.getBoolean(R.bool.padrao_exibir_url)
+                resources.getBoolean(R.bool.pref_exibir_url_padrao)
         )
 
         tv_url.visibility = if (exibirUrl) View.VISIBLE else View.INVISIBLE
+
+        val corFundo = sharedPreferences.getString(
+                getString(R.string.pref_cor_fundo),
+                getString(R.string.pref_cor_fundo_padrao)
+        )
+        window.decorView.setBackgroundColor(selecionaCorDeFundo(corFundo))
 
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
 
@@ -67,13 +74,28 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<String>,
         supportLoaderManager.initLoader(GITHUB_BUSCA_LOADER, null, this)
     }
 
+    fun selecionaCorDeFundo(corFundo: String): Int {
+        return when (corFundo) {
+            getString(R.string.pref_cor_fundo_branco_valor) -> ContextCompat.getColor(this, R.color.fundoBranco)
+            getString(R.string.pref_cor_fundo_verde_valor) -> ContextCompat.getColor(this, R.color.fundoVerde)
+            getString(R.string.pref_cor_fundo_azul_valor) -> ContextCompat.getColor(this, R.color.fundoAzul)
+            else -> ContextCompat.getColor(this, R.color.fundoBranco)
+        }
+    }
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         if (key == getString(R.string.pref_exibir_url)) {
             val exibirUrl = sharedPreferences.getBoolean(
                     key,
-                    resources.getBoolean(R.bool.padrao_exibir_url)
+                    resources.getBoolean(R.bool.pref_exibir_url_padrao)
             )
             tv_url.visibility = if (exibirUrl) View.VISIBLE else View.INVISIBLE
+        } else if (key == getString(R.string.pref_cor_fundo)) {
+            val corFundo = sharedPreferences.getString(
+                    key,
+                    getString(R.string.pref_cor_fundo_padrao)
+            )
+            window.decorView.setBackgroundColor(selecionaCorDeFundo(corFundo))
         }
     }
 

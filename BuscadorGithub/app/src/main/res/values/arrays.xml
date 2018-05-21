@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="pref_cor_fundo_lista_titulos">
+        <item>@string/pref_cor_fundo_branco_titulo</item>
+        <item>@string/pref_cor_fundo_verde_titulo</item>
+        <item>@string/pref_cor_fundo_azul_titulo</item>
+    </array>
+
+    <array name="pref_cor_fundo_lista_valores">
+        <item>@string/pref_cor_fundo_branco_valor</item>
+        <item>@string/pref_cor_fundo_verde_valor</item>
+        <item>@string/pref_cor_fundo_azul_valor</item>
+    </array>
+
+</resources>

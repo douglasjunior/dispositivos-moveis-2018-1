@@ -8,5 +8,17 @@
     <string name="pref_exibir_url" translatable="false">exibir_url</string>
     <string name="nao_exibir">Não exibir</string>
     <string name="exibir">Exibir</string>
-    <string name="exibir_url_titulo">Exibir URL de busca</string>
+    <string name="pref_exibir_url_titulo">Exibir URL de busca</string>
+
+    <string name="pref_cor_fundo" translatable="false">cor_fundo</string>
+    <string name="pref_cor_fundo_padrao" translatable="false">@string/pref_cor_fundo_branco_valor</string>
+    <string name="pref_cor_fundo_titulo" translatable="false">Cor de fundo</string>
+
+    <string name="pref_cor_fundo_branco_titulo">Branco</string>
+    <string name="pref_cor_fundo_azul_titulo">Azul</string>
+    <string name="pref_cor_fundo_verde_titulo">Verde</string>
+
+    <string name="pref_cor_fundo_branco_valor" translatable="false">cor_fundo_branco</string>
+    <string name="pref_cor_fundo_azul_valor" translatable="false">cor_fundo_azul</string>
+    <string name="pref_cor_fundo_verde_valor" translatable="false">cor_fundo_verde</string>
 </resources>
