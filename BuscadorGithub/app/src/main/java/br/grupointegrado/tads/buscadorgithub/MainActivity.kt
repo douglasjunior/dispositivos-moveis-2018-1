@@ -38,6 +38,14 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<String> 
 //            }
         }
 
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+
+        val exibirUrl = sharedPreferences.getBoolean("exibir_url", true)
+
+        if (!exibirUrl) {
+            tv_url.visibility = View.INVISIBLE
+        }
+
         et_busca.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 cacheResultado = null
