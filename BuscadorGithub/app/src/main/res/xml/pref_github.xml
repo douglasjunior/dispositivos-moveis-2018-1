@@ -2,10 +2,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="exibir_url"
-        android:summaryOff="Não exibir"
-        android:summaryOn="Exibir"
-        android:title="Exibir URL de busca" />
+        android:defaultValue="@bool/padrao_exibir_url"
+        android:key="@string/pref_exibir_url"
+        android:summaryOff="@string/nao_exibir"
+        android:summaryOn="@string/exibir"
+        android:title="@string/exibir_url_titulo" />
 
 </PreferenceScreen>

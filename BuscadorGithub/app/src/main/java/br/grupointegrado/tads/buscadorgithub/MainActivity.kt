@@ -1,11 +1,13 @@
 package br.grupointegrado.tads.buscadorgithub
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.AsyncTaskLoader
 import android.support.v4.content.Loader
+import android.support.v7.preference.PreferenceManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
@@ -15,7 +17,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
 import java.net.URL
 
-class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<String> {
+class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<String>,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     companion object {
         val GITHUB_BUSCA_LOADER = 1000
@@ -40,11 +43,14 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<String> 
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
-        val exibirUrl = sharedPreferences.getBoolean("exibir_url", true)
+        val exibirUrl = sharedPreferences.getBoolean(
+                getString(R.string.pref_exibir_url),
+                resources.getBoolean(R.bool.padrao_exibir_url)
+        )
 
-        if (!exibirUrl) {
-            tv_url.visibility = View.INVISIBLE
-        }
+        tv_url.visibility = if (exibirUrl) View.VISIBLE else View.INVISIBLE
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
 
         et_busca.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -59,6 +65,22 @@ class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<String> 
         })
 
         supportLoaderManager.initLoader(GITHUB_BUSCA_LOADER, null, this)
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+        if (key == getString(R.string.pref_exibir_url)) {
+            val exibirUrl = sharedPreferences.getBoolean(
+                    key,
+                    resources.getBoolean(R.bool.padrao_exibir_url)
+            )
+            tv_url.visibility = if (exibirUrl) View.VISIBLE else View.INVISIBLE
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {

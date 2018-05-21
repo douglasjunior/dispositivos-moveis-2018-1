@@ -4,4 +4,9 @@
 
     <string name="mensagem_erro">Não foi possível obter o resultado, tente novamente.</string>
     <string name="configuracoes">Configurações</string>
+
+    <string name="pref_exibir_url" translatable="false">exibir_url</string>
+    <string name="nao_exibir">Não exibir</string>
+    <string name="exibir">Exibir</string>
+    <string name="exibir_url_titulo">Exibir URL de busca</string>
 </resources>
