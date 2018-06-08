@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Lista de Espera</string>
+
+    <string name="nome_cliente_hint">Nome do cliente</string>
+    <string name="tamanho_grupo_hint">Tamanho do grupo (max 99)</string>
+    <string name="add_button_text">Adicionar</string>
+    <string name="nome_padrao_cliente">[Nome do cliente]</string>
+    <string name="tamanho_padrao_grupo">\?</string>
+</resources>
