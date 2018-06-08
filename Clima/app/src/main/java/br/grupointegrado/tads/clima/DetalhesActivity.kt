@@ -1,5 +1,6 @@
 package br.grupointegrado.tads.clima
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ShareCompat
@@ -35,7 +36,16 @@ class DetalhesActivity : AppCompatActivity() {
             compartilhar()
             return true
         }
+        if (item?.itemId == R.id.acao_configuracao) {
+            abrirConfiguracao()
+            return true
+        }
         return super.onOptionsItemSelected(item)
+    }
+
+    fun abrirConfiguracao () {
+        val intent = Intent(this, ConfiguracaoActivity::class.java)
+        startActivity(intent)
     }
 
     fun compartilhar() {

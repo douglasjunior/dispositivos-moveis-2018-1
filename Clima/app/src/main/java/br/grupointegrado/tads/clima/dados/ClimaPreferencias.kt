@@ -1,30 +1,18 @@
 package br.grupointegrado.tads.clima.dados
 
 import android.content.Context
+import android.support.v7.preference.PreferenceManager
+import br.grupointegrado.tads.clima.R
 
 class ClimaPreferencias {
 
     companion object {
 
         /*
-         * String de lovalização legível aos humanos.
-         */
-        val PREF_NOME_CIDADE = "city_name"
-
-        /*
-         * Para poder abrir o intent de mapa, armazenamos a posição geográfica.
-         */
-        val PREF_COORD_LAT = "coord_lat"
-        val PREF_COORD_LONG = "coord_long"
-
-        /*
          * Antes de implementar os métodos para retornar dados reais, vamos apresentar
          * algumas informações padrões.
          */
-        private val LOCAL_PADRAO = "Campo Mourão"
         private val COORDENADAS_PADRAO = doubleArrayOf(-24.043663, -52.378009)
-
-        private val LOCAL_MAPA_PADRAO = "Av. Cap. Índio Bandeira, 1224-1316 - Centro, Campo Mourão - PR"
 
         /**
          * Método para armazenar os dados do localização nas preferências
@@ -55,16 +43,17 @@ class ClimaPreferencias {
          * Retorna a lovalização atual das preferências.
          */
         fun getLocalizacaoSalva(context: Context): String {
-            /** Será implementado no futuro  */
-            return getLocalPadrao()
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            return sharedPreferences.getString(context.getString(R.string.pref_local), getLocalPadrao(context))
         }
 
         /**
          * Retorna true se o usuário selecionou o sistema métrico.
          */
         fun isMetrico(context: Context): Boolean {
-            /** Será implementado no futuro  */
-            return true
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            val unidadeSelecioada = sharedPreferences.getString(context.getString(R.string.pref_unidade), context.getString(R.string.pref_unidade_padrao))
+            return unidadeSelecioada == context.getString(R.string.pref_unidade_metrico_valor)
         }
 
         /**
@@ -86,9 +75,8 @@ class ClimaPreferencias {
             return false
         }
 
-        private fun getLocalPadrao(): String {
-            /** Será implementado no futuro  */
-            return LOCAL_PADRAO
+        private fun getLocalPadrao(context: Context): String {
+            return context.getString(R.string.pref_local_padrao)
         }
 
         fun getCoordenadasPadrao(): DoubleArray {

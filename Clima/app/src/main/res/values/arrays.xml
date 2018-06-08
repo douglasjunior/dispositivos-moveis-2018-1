@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="pref_unidade_lista_titulos">
+        <item>@string/pref_unidade_metrico_titulo</item>
+        <item>@string/pref_unidade_imperial_titulo</item>
+    </array>
+
+    <array name="pref_unidade_lista_valores">
+        <item>@string/pref_unidade_metrico_valor</item>
+        <item>@string/pref_unidade_imperial_valor</item>
+    </array>
+</resources>
+
+

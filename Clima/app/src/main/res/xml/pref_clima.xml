@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:defaultValue="@string/pref_local_padrao"
+        android:inputType="text"
+        android:key="@string/pref_local"
+        android:singleLine="true"
+        android:title="@string/pref_local_titulo" />
+
+    <ListPreference
+        android:defaultValue="@string/pref_unidade_padrao"
+        android:entries="@array/pref_unidade_lista_titulos"
+        android:entryValues="@array/pref_unidade_lista_valores"
+        android:key="@string/pref_unidade"
+        android:title="@string/pref_unidade_titulo" />
+
+</PreferenceScreen>
+
