@@ -9,10 +9,16 @@ import android.widget.TextView
 
 class ClientesAdapter : RecyclerView.Adapter<ClientesAdapter.ClienteViewHolder> {
 
-    private val cursor: Cursor
+    private var cursor: Cursor
 
     constructor(cursor: Cursor) {
         this.cursor = cursor
+    }
+
+    fun atualizarCursor(cursor: Cursor) {
+        this.cursor.close()
+        this.cursor = cursor
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClienteViewHolder {

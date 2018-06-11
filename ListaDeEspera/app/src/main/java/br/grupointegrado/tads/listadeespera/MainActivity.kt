@@ -1,5 +1,6 @@
 package br.grupointegrado.tads.listadeespera
 
+import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.support.v7.app.AppCompatActivity
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.cliente_list_item.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,7 +39,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun adicionar(view: View) {
+        if (ed_nome_cliente.text.isEmpty()) {
+            return;
+        }
 
+        val nome = ed_nome_cliente.text.toString()
+        var tamanhoGrupo = 1
+
+        try {
+            tamanhoGrupo = ed_tamanho_grupo.text.toString().toInt()
+        } catch(ex: Exception) {
+            ex.printStackTrace()
+        }
+
+        adicionarNovoCliente(nome, tamanhoGrupo)
+        clientesAdapter?.atualizarCursor(getTodosClientes())
+
+        ed_tamanho_grupo.clearFocus()
+        ed_nome_cliente.text.clear()
+        ed_tamanho_grupo.text.clear()
+    }
+
+    private fun adicionarNovoCliente(nome: String, tamanhoGrupo: Int) : Long {
+        println(nome + " " + tamanhoGrupo)
+        val cliente = ContentValues()
+        cliente.put(ListaEsperaContrato.Clientes.COLUNA_NOME, nome)
+        cliente.put(ListaEsperaContrato.Clientes.COLUNA_TAMANHO_GRUPO, tamanhoGrupo)
+        return database!!.insert(ListaEsperaContrato.Clientes.TABELA, null, cliente)
     }
 
 }
