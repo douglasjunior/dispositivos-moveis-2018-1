@@ -1,12 +1,19 @@
 package br.grupointegrado.tads.listadeespera
 
+import android.database.Cursor
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 
-class ClientesAdapter : RecyclerView.Adapter<ClientesAdapter.ClienteViewHolder>() {
+class ClientesAdapter : RecyclerView.Adapter<ClientesAdapter.ClienteViewHolder> {
+
+    private val cursor: Cursor
+
+    constructor(cursor: Cursor) {
+        this.cursor = cursor
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClienteViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -19,7 +26,7 @@ class ClientesAdapter : RecyclerView.Adapter<ClientesAdapter.ClienteViewHolder>(
     }
 
     override fun getItemCount(): Int {
-        return 0
+        return cursor.count
     }
 
     inner class ClienteViewHolder : RecyclerView.ViewHolder {
