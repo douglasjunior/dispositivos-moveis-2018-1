@@ -22,7 +22,15 @@ class ClientesAdapter : RecyclerView.Adapter<ClientesAdapter.ClienteViewHolder> 
     }
 
     override fun onBindViewHolder(holder: ClienteViewHolder, position: Int) {
+        if (!cursor.moveToPosition(position)) {
+            return;
+        }
 
+        val nome = cursor.getString(cursor.getColumnIndex(ListaEsperaContrato.Clientes.COLUNA_NOME))
+        val tamanhoGrupo = cursor.getInt(cursor.getColumnIndex(ListaEsperaContrato.Clientes.COLUNA_TAMANHO_GRUPO))
+
+        holder.tvNome.text = nome
+        holder.tvTamanhoGrupo.text = tamanhoGrupo.toString()
     }
 
     override fun getItemCount(): Int {
