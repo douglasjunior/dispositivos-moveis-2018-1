@@ -5,10 +5,12 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.BaseColumns
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.cliente_list_item.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,11 +25,27 @@ class MainActivity : AppCompatActivity() {
 
         val dbHelper = ListaEsperaBdHelper(this)
         database = dbHelper.writableDatabase
-        BdUtil.inserirDadosFicticios(database)
+//        BdUtil.inserirDadosFicticios(database)
         val cursor = getTodosClientes()
 
         clientesAdapter = ClientesAdapter(cursor)
         rv_clientes.adapter = clientesAdapter
+
+        val itemTouch = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
+                val id = viewHolder.itemView.tag as Long
+                removerCliente(id)
+                clientesAdapter!!.atualizarCursor(getTodosClientes())
+            }
+
+        })
+
+        itemTouch.attachToRecyclerView(rv_clientes)
     }
 
     fun getTodosClientes(): Cursor {
@@ -48,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
         try {
             tamanhoGrupo = ed_tamanho_grupo.text.toString().toInt()
-        } catch(ex: Exception) {
+        } catch (ex: Exception) {
             ex.printStackTrace()
         }
 
@@ -60,12 +78,21 @@ class MainActivity : AppCompatActivity() {
         ed_tamanho_grupo.text.clear()
     }
 
-    private fun adicionarNovoCliente(nome: String, tamanhoGrupo: Int) : Long {
-        println(nome + " " + tamanhoGrupo)
+    private fun adicionarNovoCliente(nome: String, tamanhoGrupo: Int): Long {
         val cliente = ContentValues()
         cliente.put(ListaEsperaContrato.Clientes.COLUNA_NOME, nome)
         cliente.put(ListaEsperaContrato.Clientes.COLUNA_TAMANHO_GRUPO, tamanhoGrupo)
         return database!!.insert(ListaEsperaContrato.Clientes.TABELA, null, cliente)
+    }
+
+    private fun removerCliente(clienteId: Long): Boolean {
+        val nomeTabela = ListaEsperaContrato.Clientes.TABELA
+        val where = "${BaseColumns._ID} = ?"
+        val argumentos = arrayOf(clienteId.toString())
+
+        val removidos = database!!.delete(nomeTabela, where, argumentos)
+
+        return removidos > 0
     }
 
 }
