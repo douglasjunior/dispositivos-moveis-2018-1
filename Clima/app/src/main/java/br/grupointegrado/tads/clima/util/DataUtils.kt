@@ -6,6 +6,7 @@ import br.grupointegrado.tads.clima.R
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class DataUtils {
 
     companion object {
@@ -116,6 +117,17 @@ class DataUtils {
             return (date + gmtOffset) / DIA_EM_MILISSEGUNDOS
         }
 
+        /**
+         * Verifica se a data está normalizada, ou seja: sem hora, minuto e segundo.
+         *
+         */
+        fun dataEstaNormalizada(millisSinceEpoch: Long): Boolean {
+            var isDateNormalized = false
+            if (millisSinceEpoch % DIA_EM_MILISSEGUNDOS == 0L) {
+                isDateNormalized = true
+            }
+            return isDateNormalized
+        }
     }
 
 }

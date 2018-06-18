@@ -32,6 +32,11 @@
             android:name=".ConfiguracaoActivity"
             android:label="Configurações" />
 
+        <provider
+            android:name=".dados.ClimaContentProvider"
+            android:authorities="@string/autoridade"
+            android:exported="false" />
+
     </application>
 
 </manifest>

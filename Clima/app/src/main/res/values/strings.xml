@@ -110,4 +110,6 @@
     <string name="condicao_962">Furacão</string>
 
     <string name="condicao_desconhecida">Desconhecido (<xliff:g id="condicaoId">%1$d</xliff:g>)</string>
+
+    <string name="autoridade">br.grupointegrado.tads.clima.dados.ClimaContentProvider</string>
 </resources>
