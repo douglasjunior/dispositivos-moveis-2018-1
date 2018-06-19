@@ -6,8 +6,8 @@ import android.provider.BaseColumns
 object ClimaContrato {
 
     val AUTORIDADE = "br.grupointegrado.tads.clima.dados.ClimaContentProvider"
-    val BASE_URI = Uri.parse("content://$AUTORIDADE")
-    val PATH_CLIMA = "clima"
+    val URI_BASE = Uri.parse("content://$AUTORIDADE")
+    val URI_CLIMA = "clima"
 
     internal object Clima : BaseColumns {
         val TABELA = "clima"

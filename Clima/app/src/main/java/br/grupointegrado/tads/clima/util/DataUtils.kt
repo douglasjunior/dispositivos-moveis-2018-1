@@ -118,15 +118,16 @@ class DataUtils {
         }
 
         /**
-         * Verifica se a data está normalizada, ou seja: sem hora, minuto e segundo.
+         * Verifica se a data está normalizada,
+         * ou seja: sem hora, minuto e segundo.
          *
          */
-        fun dataEstaNormalizada(millisSinceEpoch: Long): Boolean {
-            var isDateNormalized = false
-            if (millisSinceEpoch % DIA_EM_MILISSEGUNDOS == 0L) {
-                isDateNormalized = true
+        fun dataEstaNormalizada(milisegundos: Long): Boolean {
+            var estaNormalizada = false
+            if (milisegundos % DIA_EM_MILISSEGUNDOS == 0L) {
+                estaNormalizada = true
             }
-            return isDateNormalized
+            return estaNormalizada
         }
     }
 

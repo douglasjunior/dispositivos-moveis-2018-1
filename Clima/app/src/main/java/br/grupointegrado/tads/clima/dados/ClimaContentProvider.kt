@@ -9,48 +9,55 @@ import br.grupointegrado.tads.clima.util.DataUtils
 
 class ClimaContentProvider : ContentProvider() {
 
-    companion object {
-        val CODE_CLIMA = 100
-        val CODE_CLIMA_POR_DATA = 101
 
-        val uriMatcher: UriMatcher
+    companion object {
+        var CODE_CLIMA = 100
+        var CODE_CLIMA_POR_DATA = 101
+
+        val uriMatcher = UriMatcher(UriMatcher.NO_MATCH)
 
         init {
-            uriMatcher = UriMatcher(UriMatcher.NO_MATCH)
-            val autoridade = ClimaContrato.AUTORIDADE
-            uriMatcher.addURI(autoridade, ClimaContrato.PATH_CLIMA, CODE_CLIMA)
-            uriMatcher.addURI(autoridade, "${ClimaContrato.PATH_CLIMA}/#", CODE_CLIMA_POR_DATA)
+            // content://br.grupointegrado.tads.clima.dados.ClimaContentProvider/clima
+            uriMatcher.addURI(ClimaContrato.AUTORIDADE,
+                    ClimaContrato.URI_CLIMA,
+                    CODE_CLIMA)
+
+            // content://br.grupointegrado.tads.clima.dados.ClimaContentProvider/clima/#
+            uriMatcher.addURI(ClimaContrato.AUTORIDADE,
+                    "${ClimaContrato.URI_CLIMA}/#",
+                    CODE_CLIMA_POR_DATA)
         }
     }
 
-    private var bdHelper: ClimaBdHelper? = null
+    var bdHelper: ClimaBdHelper? = null
 
     override fun onCreate(): Boolean {
-        bdHelper = ClimaBdHelper(context)
+        bdHelper = ClimaBdHelper(this.context)
         return true
     }
 
     override fun shutdown() {
-        bdHelper!!.close()
-        super.shutdown()
+        bdHelper?.close()
     }
 
-    override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor {
+    override fun query(uri: Uri, projection: Array<out String>?,
+                       selection: String?, selectionArgs: Array<out String>?,
+                       sortOrder: String?): Cursor {
+        val bd = bdHelper!!.readableDatabase
         val cursor: Cursor
         when (uriMatcher.match(uri)) {
-            CODE_CLIMA_POR_DATA -> {
-                val normalizedUtcDateString = uri.getLastPathSegment()
-                val selectionArguments = arrayOf(normalizedUtcDateString)
-
-                cursor = bdHelper!!.getReadableDatabase().query(ClimaContrato.Clima.TABELA,
-                        projection,
-                        "${ClimaContrato.Clima.COLUNA_DATA_HORA} = ? ",
-                        selectionArguments, null, null, sortOrder)
-            }
             CODE_CLIMA -> {
-                cursor = bdHelper!!.getReadableDatabase().query(ClimaContrato.Clima.TABELA,
-                        projection, selection,
-                        selectionArgs, null, null, sortOrder)
+                cursor = bd.query(ClimaContrato.Clima.TABELA,
+                        null, null, null, null, null,
+                        sortOrder)
+            }
+            CODE_CLIMA_POR_DATA -> {
+                val dataClima = uri.lastPathSegment
+                val where = "${ClimaContrato.Clima.COLUNA_DATA_HORA} = ?"
+                var whereArgs = arrayOf(dataClima.toString())
+                cursor = bd.query(ClimaContrato.Clima.TABELA,
+                        null, where, whereArgs, null, null,
+                        sortOrder)
             }
             else -> throw UnsupportedOperationException("Uri desconhecida: $uri")
         }
@@ -68,11 +75,11 @@ class ClimaContentProvider : ContentProvider() {
                     for (value in values) {
                         val dataClima = value.getAsLong(ClimaContrato.Clima.COLUNA_DATA_HORA)
                         if (!DataUtils.dataEstaNormalizada(dataClima)) {
-                            throw IllegalArgumentException("A data precisa estar normalizada para ser inserida.")
+                            throw IllegalArgumentException("A data deve estar normalizada.")
                         }
                         val _id = bd.insert(ClimaContrato.Clima.TABELA, null, value)
-                        if (!_id.equals(-1)) {
-                            registrosInseridos += 1
+                        if (_id != -1L) {
+                            registrosInseridos++
                         }
                     }
                     bd.setTransactionSuccessful()
@@ -84,20 +91,20 @@ class ClimaContentProvider : ContentProvider() {
                 }
                 return registrosInseridos
             }
-            else -> return super.bulkInsert(uri, values)
         }
+        return super.bulkInsert(uri, values)
     }
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
         var registrosDeletados: Int
-        val selecao = if (selection != null) selection else ""
+        val selecao = if (selection != null) selection else "1"
         when (uriMatcher.match(uri)) {
             CODE_CLIMA -> {
                 registrosDeletados = bdHelper!!.getWritableDatabase().delete(
                         ClimaContrato.Clima.TABELA,
                         selecao, selectionArgs)
             }
-            else -> throw UnsupportedOperationException("Unknown uri: $uri")
+            else -> throw UnsupportedOperationException("Uri desconhecida: $uri")
         }
         if (registrosDeletados != 0) {
             context.contentResolver.notifyChange(uri, null)
