@@ -2,25 +2,27 @@ package br.grupointegrado.tads.clima
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.database.Cursor
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.LoaderManager
-import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import android.support.v7.preference.PreferenceManager
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import br.grupointegrado.tads.buscadorgithub.NetworkUtils
+import br.grupointegrado.tads.clima.dados.ClimaContrato
 import br.grupointegrado.tads.clima.dados.ClimaPreferencias
-import br.grupointegrado.tads.clima.util.JsonUtils
+import br.grupointegrado.tads.clima.sync.ClimaSyncUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(),
         PrevisaoAdapter.PrevisaoItemClickListener,
-        LoaderManager.LoaderCallbacks<Array<String?>?>,
+        LoaderManager.LoaderCallbacks<Cursor>,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     companion object {
@@ -29,10 +31,13 @@ class MainActivity : AppCompatActivity(),
     }
 
     var previsaoAdapter: PrevisaoAdapter? = null
+    var posicao = RecyclerView.NO_POSITION
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+//        DadosFakeUtils.inserirDadosFake(this)
 
         previsaoAdapter = PrevisaoAdapter(null, this)
         val layoutManager = LinearLayoutManager(this)
@@ -40,10 +45,14 @@ class MainActivity : AppCompatActivity(),
         rv_clima.layoutManager = layoutManager
         rv_clima.adapter = previsaoAdapter
 
+        exibirProgressBar()
+
         supportLoaderManager.initLoader(DADOS_PREVISAO_LOADER, null, this)
 
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this)
+
+        ClimaSyncUtils.inicializar(this)
     }
 
     override fun onDestroy() {
@@ -53,66 +62,47 @@ class MainActivity : AppCompatActivity(),
                 .unregisterOnSharedPreferenceChangeListener(this)
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Array<String?>?> {
-        val loader = object : AsyncTaskLoader<Array<String?>?>(this) {
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
 
-            var dadosPrevisao: Array<String?>? = null
+        when (id) {
+            DADOS_PREVISAO_LOADER -> {
+                val forecastQueryUri = ClimaContrato.Clima.CONTENT_URI
+                val sortOrder = "${ClimaContrato.Clima.COLUNA_DATA_HORA} ASC"
+                val selection = ClimaContrato.Clima.getSqlSelectHojeEmDiante()
 
-            override fun onStartLoading() {
-                if (dadosPrevisao != null) {
-                    deliverResult(dadosPrevisao);
-                } else {
-                    exibirProgressBar()
-                    forceLoad()
-                }
+                return CursorLoader(this,
+                        forecastQueryUri,
+                        null,
+                        selection,
+                        null,
+                        sortOrder)
             }
-
-            override fun loadInBackground(): Array<String?>? {
-                try {
-                    val localizacao = ClimaPreferencias
-                            .getLocalizacaoSalva(this@MainActivity)
-
-                    val url = NetworkUtils.construirUrl(localizacao)
-
-                    if (url != null) {
-                        val resultado = NetworkUtils.obterRespostaDaUrlHttp(url)
-                        val dadosClima = JsonUtils
-                                .getSimplesStringsDeClimaDoJson(this@MainActivity,
-                                        resultado!!)
-                        return dadosClima
-                    }
-                } catch (ex: Exception) {
-                    ex.printStackTrace()
-                }
-                return null
-            }
-
-            override fun deliverResult(data: Array<String?>?) {
-                super.deliverResult(data)
-                dadosPrevisao = data
-            }
+            else -> throw RuntimeException("Loader não implementado: $id")
         }
-        return loader
+
     }
 
-    override fun onLoadFinished(loader: Loader<Array<String?>?>?,
-                                dadosClima: Array<String?>?) {
-        previsaoAdapter?.setDadosClima(dadosClima)
-        if (dadosClima != null) {
+    override fun onLoadFinished(loader: Loader<Cursor>?,
+                                cursor: Cursor) {
+        previsaoAdapter?.atualizarCursor(cursor)
+        if (this.posicao == RecyclerView.NO_POSITION) {
+            this.posicao = 0
+        }
+        rv_clima.smoothScrollToPosition(this.posicao)
+        if (cursor.count > 0) {
             exibirResultado()
-        } else {
-            exibirMensagemErro()
         }
     }
 
-    override fun onLoaderReset(loader: Loader<Array<String?>?>?) {
+    override fun onLoaderReset(loader: Loader<Cursor>?) {
+        previsaoAdapter?.atualizarCursor(null)
     }
 
-    override fun onItemClick(index: Int) {
-        val previsao = previsaoAdapter!!.getDadosClima()!!.get(index)
-
+    override fun onItemClick(dataHora: Long) {
         val intentDetalhes = Intent(this, DetalhesActivity::class.java)
-        intentDetalhes.putExtra(DetalhesActivity.DADOS_PREVISAO, previsao)
+
+        val uri = ClimaContrato.Clima.construirPrevisaoUri(dataHora)
+        intentDetalhes.data = uri
 
         startActivity(intentDetalhes)
     }
@@ -136,7 +126,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId === R.id.acao_atualizar) {
-            supportLoaderManager.restartLoader(DADOS_PREVISAO_LOADER, null, this)
+            ClimaSyncUtils.sincronizarImediatamente(this)
             return true
         }
         if (item?.itemId === R.id.acao_mapa) {
@@ -158,12 +148,6 @@ class MainActivity : AppCompatActivity(),
     fun exibirResultado() {
         rv_clima.visibility = View.VISIBLE
         tv_mensagem_erro.visibility = View.INVISIBLE
-        pb_aguarde.visibility = View.INVISIBLE
-    }
-
-    fun exibirMensagemErro() {
-        rv_clima.visibility = View.INVISIBLE
-        tv_mensagem_erro.visibility = View.VISIBLE
         pb_aguarde.visibility = View.INVISIBLE
     }
 

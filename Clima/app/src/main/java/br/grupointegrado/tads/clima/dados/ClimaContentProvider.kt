@@ -73,10 +73,6 @@ class ClimaContentProvider : ContentProvider() {
                 bd.beginTransaction()
                 try {
                     for (value in values) {
-                        val dataClima = value.getAsLong(ClimaContrato.Clima.COLUNA_DATA_HORA)
-                        if (!DataUtils.dataEstaNormalizada(dataClima)) {
-                            throw IllegalArgumentException("A data deve estar normalizada.")
-                        }
                         val _id = bd.insert(ClimaContrato.Clima.TABELA, null, value)
                         if (_id != -1L) {
                             registrosInseridos++

@@ -1,91 +1,128 @@
 package br.grupointegrado.tads.clima.util
 
+import android.content.ContentValues
 import android.content.Context
-import android.util.Log
+import br.grupointegrado.tads.clima.dados.ClimaContrato
+import br.grupointegrado.tads.clima.dados.ClimaPreferencias
+
+
 import org.json.JSONException
 import org.json.JSONObject
+
 import java.net.HttpURLConnection
 
-class JsonUtils {
+/**
+ * Utility functions to handle OpenWeatherMap JSON data.
+ */
+object JsonUtils {
 
-    companion object {
+    /* Location information */
+    private val OWM_CITY = "city"
+    private val OWM_COORD = "coord"
 
-        val OWM_LIST = "list"
+    /* Location coordinate */
+    private val OWM_LATITUDE = "lat"
+    private val OWM_LONGITUDE = "lon"
+
+    /* Weather information. Each day's forecast info is an element of the "list" array */
+    private val OWM_LIST = "list"
+
+    private val OWM_PRESSURE = "pressure"
+    private val OWM_HUMIDITY = "humidity"
 
 
-        val OWM_WEATHER = "weather"
-        val OWM_DESCRIPTION = "description"
+    private val OWM_WINDSPEED = "speed"
+    private val OWM_WIND_DIRECTION = "deg"
 
-        val OWM_MAIN = "main"
-        val OWM_TEMPERATURE = "temp"
-        val OWM_MAX = "temp_max"
-        val OWM_MIN = "temp_min"
+    /* All temperatures are children of the "temp" object */
+    private val OWM_TEMPERATURE = "temp"
 
-        val OWM_MESSAGE_CODE = "cod"
+    /* Max temperature for the day */
+    private val OWM_MAX = "temp_max"
+    private val OWM_MIN = "temp_min"
 
-        /**
-         * Este método interpreta o JSON recebido do servidor e retorna um array de Strings
-         * descrevendo o clima de vários dias de previsão.
-         *
-         * Posteriormente, analisaremos o JSON em dados estruturados dentro da função
-         * getFullWeatherDataFromJson, aproveitando os dados que armazenamos no JSON. Por enquanto,
-         * apenas convertemos o JSON em strings legíveis por humanos.
-         *
-         */
-        @Throws(JSONException::class)
-        fun getSimplesStringsDeClimaDoJson(context: Context, stringJsonPrevisao: String): Array<String?>? {
-            Log.v("JsonUtils", stringJsonPrevisao)
+    private val OWM_WEATHER = "weather"
+    private val OWM_WEATHER_ID = "id"
 
-            val jsonPrevisao = JSONObject(stringJsonPrevisao)
+    private val OWM_MESSAGE_CODE = "cod"
 
-            /* Is there an error? */
-            if (jsonPrevisao.has(OWM_MESSAGE_CODE)) {
-                val codigoStatus = jsonPrevisao.getInt(OWM_MESSAGE_CODE)
+    @Throws(JSONException::class)
+    fun getWeatherContentValuesFromJson(context: Context, forecastJsonStr: String?): Array<ContentValues?>? {
 
-                when (codigoStatus) {
-                    HttpURLConnection.HTTP_OK -> {
-                        /* Ok */
-                    }
-                    HttpURLConnection.HTTP_NOT_FOUND ->
-                        /* Localização inválida */
-                        return null
-                    else ->
-                        /* Conexão perdida */
-                        return null
+        val forecastJson = JSONObject(forecastJsonStr)
+
+        if (forecastJson.has(OWM_MESSAGE_CODE)) {
+            val errorCode = forecastJson.getInt(OWM_MESSAGE_CODE)
+
+            when (errorCode) {
+                HttpURLConnection.HTTP_OK -> {
                 }
+                HttpURLConnection.HTTP_NOT_FOUND ->
+                    return null
+                else ->
+                    return null
             }
-
-            val arrayClima = jsonPrevisao.getJSONArray(OWM_LIST)
-
-            val dadosDoClima = arrayOfNulls<String>(arrayClima.length())
-
-            val dataLocal = System.currentTimeMillis()
-            val dataUtc = DataUtils.convertDataLocalParaUtc(dataLocal)
-            val inicioDoDia = DataUtils.normalizarData(dataUtc)
-
-            for (i in 0 until arrayClima.length()) {
-                val data: String
-                val maximaEMinima: String
-
-                val diaPrevisao = arrayClima.getJSONObject(i)
-
-                val dataHoraEmMilissegundos = inicioDoDia + DataUtils.DIA_EM_MILISSEGUNDOS * i
-                data = DataUtils.getDataAmigavelEmString(context, dataHoraEmMilissegundos, false)
-
-                val objetoClima = diaPrevisao.getJSONArray(OWM_WEATHER).getJSONObject(0)
-                val descricao = objetoClima.getString(OWM_DESCRIPTION)
-
-                val objetoPrincipal = diaPrevisao.getJSONObject(OWM_MAIN)
-
-                val max = objetoPrincipal.getDouble(OWM_MAX)
-                val min = objetoPrincipal.getDouble(OWM_MIN)
-                maximaEMinima = ClimaUtils.formataMaxMin(context, max, min)
-
-                dadosDoClima[i] = "$data - $descricao - $maximaEMinima"
-            }
-
-            return dadosDoClima
         }
 
+        val jsonWeatherArray = forecastJson.getJSONArray(OWM_LIST)
+
+        val cityJson = forecastJson.getJSONObject(OWM_CITY)
+
+        val cityCoord = cityJson.getJSONObject(OWM_COORD)
+        val cityLatitude = cityCoord.getDouble(OWM_LATITUDE)
+        val cityLongitude = cityCoord.getDouble(OWM_LONGITUDE)
+
+        ClimaPreferencias.setDetalhesLocalizacao(context, cityLatitude, cityLongitude)
+
+        val weatherContentValues = arrayOfNulls<ContentValues>(jsonWeatherArray.length())
+
+        for (i in 0 until jsonWeatherArray.length()) {
+
+            val pressure: Double
+            val humidity: Int
+            val windSpeed: Double
+            val windDirection: Double
+
+            val high: Double
+            val low: Double
+
+            val weatherId: Int
+
+
+            val dayForecast = jsonWeatherArray.getJSONObject(i)
+            val main = dayForecast.getJSONObject("main")
+            val wind = dayForecast.getJSONObject("wind")
+
+            val dt = dayForecast.getLong("dt") * 1000
+
+            pressure = main.getDouble(OWM_PRESSURE)
+            humidity = main.getInt(OWM_HUMIDITY)
+
+            windSpeed = wind.getDouble(OWM_WINDSPEED)
+            windDirection = wind.getDouble(OWM_WIND_DIRECTION)
+
+            val weatherObject = dayForecast.getJSONArray(OWM_WEATHER).getJSONObject(0)
+
+            weatherId = weatherObject.getInt(OWM_WEATHER_ID)
+
+            high = main.getDouble(OWM_MAX)
+            low = main.getDouble(OWM_MIN)
+
+            val Clima = ClimaContrato.Clima
+
+            val weatherValues = ContentValues()
+            weatherValues.put(Clima.COLUNA_DATA_HORA, dt)
+            weatherValues.put(Clima.COLUNA_UMIDADE, humidity)
+            weatherValues.put(Clima.COLUNA_PRESSAO, pressure)
+            weatherValues.put(Clima.COLUNA_VEL_VENTO, windSpeed)
+            weatherValues.put(Clima.COLUNA_GRAUS, windDirection)
+            weatherValues.put(Clima.COLUNA_MAX_TEMP, high)
+            weatherValues.put(Clima.COLUNA_MIN_TEMP, low)
+            weatherValues.put(Clima.COLUNA_CLIMA_ID, weatherId)
+
+            weatherContentValues[i] = weatherValues
+        }
+
+        return weatherContentValues
     }
 }

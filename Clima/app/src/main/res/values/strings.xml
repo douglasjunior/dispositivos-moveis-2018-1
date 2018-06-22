@@ -32,6 +32,8 @@
     <string name="pref_unidade_metrico_valor">metrico</string>
     <string name="pref_unidade_imperial_valor">Imperial</string>
 
+    <string name="pref_ultima_notificacao">ultima_notificacao</string>
+
     <!-- - - - - - - - - - - - - - - -->
     <!--     Usado por ClimaUtils    -->
     <!-- - - - - - - - - - - - - - - -->
@@ -50,6 +52,14 @@
 
     <string name="formata_vento_mph">
         <xliff:g id="velocidade">%1$1.0f</xliff:g> mph <xliff:g id="direcao">%2$s</xliff:g>
+    </string>
+
+    <string name="formata_pressao">
+        <xliff:g id="pressao">%1.0f</xliff:g> hPa
+    </string>
+
+    <string name="formata_umidade">
+        <xliff:g id="umidade">%1.0f</xliff:g> %%
     </string>
 
     <string name="condicao_2xx">Tempestade</string>
@@ -112,4 +122,5 @@
     <string name="condicao_desconhecida">Desconhecido (<xliff:g id="condicaoId">%1$d</xliff:g>)</string>
 
     <string name="autoridade">br.grupointegrado.tads.clima.dados.ClimaContentProvider</string>
+
 </resources>
